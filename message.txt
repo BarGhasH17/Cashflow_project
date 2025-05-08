@@ -1,7 +1,6 @@
-Improve form fields with dynamic add options
+Clean up templates and views
 
-- Updated Status/Type dropdowns to show empty initial selection
-- Added consistent "+ Add" functionality for both fields
-- Enhanced form templates with matching styling
-- Modified views to handle dynamic additions
-- Improved admin interface for new fields
+- Streamlined views.py organization and removed duplicates
+- Improved template structure and consistency
+- Enhanced code readability with better formatting
+- Removed unused message.txt file

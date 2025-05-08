@@ -1,66 +1,24 @@
 from django.shortcuts import render, redirect
-from .models import CashFlowRecord, Status, Type, Category, Subcategory
 from django.http import JsonResponse
-from .filters import CashFlowFilter 
-from .forms import CashFlowForm  # You'll create this next
 from django.views.decorators.csrf import csrf_exempt
+from .models import CashFlowRecord, Status, Type, Category, Subcategory
+from .filters import CashFlowFilter
+from .forms import CashFlowForm
+
 
 def record_list(request):
-    records = CashFlowRecord.objects.all()
-    return render(request, 'cashflow/record_list.html', {'records': records})
-
-def add_record(request):
-    if request.method == 'POST':
-        form = CashFlowForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('record_list')
-    else:
-        form = CashFlowForm()
-    return render(request, 'cashflow/add_record.html', {'form': form})
-
-def get_categories(request):
-    type_id = request.GET.get('type_id')
-    categories = Category.objects.filter(type_id=type_id).values('id', 'name')
-    return JsonResponse(list(categories), safe=False)
-
-def get_subcategories(request):
-    category_id = request.GET.get('category_id')
-    subcategories = Subcategory.objects.filter(category_id=category_id).values('id', 'name')
-    return JsonResponse(list(subcategories), safe=False)
-
-def record_list(request):
-    # Get all records
-    records = CashFlowRecord.objects.all().order_by('-date')  # Newest first
-    
-    # Apply filters
+    """Display filtered list of cash flow records"""
+    records = CashFlowRecord.objects.all().order_by('-date')
     record_filter = CashFlowFilter(request.GET, queryset=records)
     
-    context = {
-        'filter': record_filter,  # Pass the filter to template
-        'records': record_filter.qs  
-    }
-    return render(request, 'cashflow/record_list.html', context)
+    return render(request, 'cashflow/record_list.html', {
+        'filter': record_filter,
+        'records': record_filter.qs
+    })
 
-@csrf_exempt
-def quick_add_status(request):
-    if request.method == 'POST':
-        status_name = request.POST.get('name', '').strip()
-        if status_name:
-            status, created = Status.objects.get_or_create(name=status_name)
-            return JsonResponse({'id': status.id, 'name': status.name})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-@csrf_exempt
-def quick_add_type(request):
-    if request.method == 'POST':
-        type_name = request.POST.get('name', '').strip()
-        if type_name:
-            type_obj, created = Type.objects.get_or_create(name=type_name)
-            return JsonResponse({'id': type_obj.id, 'name': type_obj.name})
-    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 def add_record(request):
+    """Handle creation of new cash flow records"""
     if request.method == 'POST':
         form = CashFlowForm(request.POST)
         if form.is_valid():
@@ -72,5 +30,47 @@ def add_record(request):
     return render(request, 'cashflow/add_record.html', {
         'form': form,
         'statuses': Status.objects.all(),
-        'types': Type.objects.all(),
+        'types': Type.objects.all()
     })
+
+
+@csrf_exempt
+def quick_add_status(request):
+    """AJAX endpoint for adding new statuses"""
+    if request.method == 'POST':
+        status_name = request.POST.get('name', '').strip()
+        if status_name:
+            status, created = Status.objects.get_or_create(name=status_name)
+            return JsonResponse({
+                'id': status.id, 
+                'name': status.name
+            })
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@csrf_exempt
+def quick_add_type(request):
+    """AJAX endpoint for adding new types"""
+    if request.method == 'POST':
+        type_name = request.POST.get('name', '').strip()
+        if type_name:
+            type_obj, created = Type.objects.get_or_create(name=type_name)
+            return JsonResponse({
+                'id': type_obj.id, 
+                'name': type_obj.name
+            })
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def get_categories(request):
+    """AJAX endpoint for fetching categories by type"""
+    type_id = request.GET.get('type_id')
+    categories = Category.objects.filter(type_id=type_id).values('id', 'name')
+    return JsonResponse(list(categories), safe=False)
+
+
+def get_subcategories(request):
+    """AJAX endpoint for fetching subcategories by category"""
+    category_id = request.GET.get('category_id')
+    subcategories = Subcategory.objects.filter(category_id=category_id).values('id', 'name')
+    return JsonResponse(list(subcategories), safe=False)
