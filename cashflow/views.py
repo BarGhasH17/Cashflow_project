@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import CashFlowRecord, Status, Type, Category, Subcategory
+from django.http import JsonResponse
 from .forms import CashFlowForm  # You'll create this next
 
 def record_list(request):
@@ -15,3 +16,13 @@ def add_record(request):
     else:
         form = CashFlowForm()
     return render(request, 'cashflow/add_record.html', {'form': form})
+
+def get_categories(request):
+    type_id = request.GET.get('type_id')
+    categories = Category.objects.filter(type_id=type_id).values('id', 'name')
+    return JsonResponse(list(categories), safe=False)
+
+def get_subcategories(request):
+    category_id = request.GET.get('category_id')
+    subcategories = Subcategory.objects.filter(category_id=category_id).values('id', 'name')
+    return JsonResponse(list(subcategories), safe=False)

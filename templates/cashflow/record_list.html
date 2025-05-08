@@ -1,0 +1,40 @@
+<!-- templates/cashflow/record_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Cash Flow Records</h2>
+    <a href="{% url 'add_record' %}" class="btn btn-primary mb-3">Add New Record</a>
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Subcategory</th>
+                <th>Amount</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+            <tr>
+                <td>{{ record.date|date:"Y-m-d" }}</td>
+                <td>{{ record.status.name }}</td>
+                <td>{{ record.type.name }}</td>
+                <td>{{ record.category.name }}</td>
+                <td>{{ record.subcategory.name }}</td>
+                <td>{{ record.amount }} ₽</td>
+                <td>{{ record.comment|default:"" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
