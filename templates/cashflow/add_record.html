@@ -2,6 +2,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <div class="container mt-4">
     <h2>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Cash Flow Record</h2>
     
@@ -11,21 +12,69 @@
         <div class="mb-3">
             {{ form.date.label_tag }}
             {{ form.date }}
+            <small class="text-muted">Leave blank to use today's date</small>
             {% if form.date.errors %}
                 <div class="text-danger">{{ form.date.errors }}</div>
             {% endif %}
         </div>
         
+        <!-- Status Field -->
         <div class="mb-3">
-            {{ form.status.label_tag }}
-            {{ form.status }}
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <label for="status-select" class="col-form-label">Status:</label>
+                </div>
+                <div class="col-auto">
+                    <select name="status" id="status-select" class="form-select form-select-sm" required>
+                        <option value="" selected disabled>Select status...</option>
+                        {% for status in statuses %}
+                            <option value="{{ status.id }}">{{ status.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="button" id="add-status-btn" class="btn btn-sm btn-outline-secondary">+ Add</button>
+                </div>
+            </div>
+            
+            <div id="new-status-container" class="row mt-2 d-none">
+                <div class="col-12">
+                    <div class="input-group input-group-sm">
+                        <input type="text" id="new-status-input" class="form-control" placeholder="New status name">
+                        <button id="save-status-btn" class="btn btn-success" type="button">Save</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        
+
+        <!-- Type Field -->
         <div class="mb-3">
-            {{ form.type.label_tag }}
-            {{ form.type }}
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <label for="type-select" class="col-form-label">Type:</label>
+                </div>
+                <div class="col-auto">
+                    <select name="type" id="type-select" class="form-select form-select-sm" required>
+                        <option value="" selected disabled>Select type...</option>
+                        {% for type in types %}
+                            <option value="{{ type.id }}">{{ type.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="button" id="add-type-btn" class="btn btn-sm btn-outline-secondary">+ Add</button>
+                </div>
+            </div>
+            
+            <div id="new-type-container" class="row mt-2 d-none">
+                <div class="col-12">
+                    <div class="input-group input-group-sm">
+                        <input type="text" id="new-type-input" class="form-control" placeholder="New type name">
+                        <button id="save-type-btn" class="btn btn-success" type="button">Save</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        
         <div class="mb-3">
             {{ form.category.label_tag }}
             {{ form.category }}
@@ -55,6 +104,7 @@
 </div>
 
 <!-- Dynamic category/subcategory filtering -->
+
 <script>
 document.getElementById("id_type").addEventListener("change", function() {
     const typeId = this.value;
@@ -88,4 +138,114 @@ document.getElementById("id_category").addEventListener("change", function() {
         });
 });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusSelect = document.getElementById('status-select');
+        const addBtn = document.getElementById('add-status-btn');
+        const container = document.getElementById('new-status-container');
+        const newInput = document.getElementById('new-status-input');
+        const saveBtn = document.getElementById('save-status-btn');
+        
+        // Toggle input field
+        addBtn.addEventListener('click', function() {
+            container.classList.toggle('d-none');
+            newInput.focus();
+        });
+        
+        // Save new status
+        saveBtn.addEventListener('click', function() {
+            const statusName = newInput.value.trim();
+            if (!statusName) return;
+            
+            fetch('/status/quick-add/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: `name=${encodeURIComponent(statusName)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.id) {
+                    // Add new option and select it
+                    const option = new Option(data.name, data.id, true, true);
+                    statusSelect.add(option);
+                    
+                    // Reset and hide
+                    newInput.value = '';
+                    container.classList.add('d-none');
+                    
+                    // Brief success indication
+                    saveBtn.textContent = '✓ Saved';
+                    setTimeout(() => {
+                        saveBtn.textContent = 'Save';
+                    }, 1000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                saveBtn.textContent = 'Error!';
+                setTimeout(() => {
+                    saveBtn.textContent = 'Save';
+                }, 1000);
+            });
+        });
+        
+        // Allow saving by pressing Enter
+        newInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                saveBtn.click();
+            }
+        });
+    });
+</script>
+<script>
+    // Type field functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Type field setup (same pattern as status)
+        const typeSelect = document.getElementById('type-select');
+        const addTypeBtn = document.getElementById('add-type-btn');
+        const typeContainer = document.getElementById('new-type-container');
+        const newTypeInput = document.getElementById('new-type-input');
+        const saveTypeBtn = document.getElementById('save-type-btn');
+        
+        addTypeBtn.addEventListener('click', function() {
+            typeContainer.classList.toggle('d-none');
+            newTypeInput.focus();
+        });
+        
+        saveTypeBtn.addEventListener('click', function() {
+            const typeName = newTypeInput.value.trim();
+            if (!typeName) return;
+            
+            fetch('/type/quick-add/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: `name=${encodeURIComponent(typeName)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.id) {
+                    const option = new Option(data.name, data.id, true, true);
+                    typeSelect.add(option);
+                    newTypeInput.value = '';
+                    typeContainer.classList.add('d-none');
+                    saveTypeBtn.textContent = '✓ Saved';
+                    setTimeout(() => saveTypeBtn.textContent = 'Save', 1000);
+                }
+            });
+        });
+        
+        newTypeInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') saveTypeBtn.click();
+        });
+        
+        // Keep your existing status field JavaScript here...
+    });
+</script>
+
 {% endblock %}

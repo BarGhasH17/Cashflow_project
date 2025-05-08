@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 class Status(models.Model):
     name = models.CharField(max_length=50, unique=True)  # e.g., "Business", "Personal", "Tax"
@@ -27,7 +28,10 @@ class Subcategory(models.Model):
         return self.name
 
 class CashFlowRecord(models.Model):
-    date = models.DateField()
+    date = models.DateField(
+        default=timezone.now,  # Auto-fills with current date
+        verbose_name="Record Date"
+    )
     status = models.ForeignKey(Status, on_delete=models.PROTECT)
     type = models.ForeignKey(Type, on_delete=models.PROTECT)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)

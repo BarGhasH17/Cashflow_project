@@ -1,7 +1,7 @@
-Implement filtering and template enhancements
+Improve form fields with dynamic add options
 
-- Added django-filter setup with CashFlowFilter class
-- Updated record_list view to support filtering
-- Configured template directory in settings.py
-- Enhanced base template with date picker support
-- Improved record_list template with filter UI
+- Updated Status/Type dropdowns to show empty initial selection
+- Added consistent "+ Add" functionality for both fields
+- Enhanced form templates with matching styling
+- Modified views to handle dynamic additions
+- Improved admin interface for new fields
