@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cashflow.apps.CashflowConfig',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

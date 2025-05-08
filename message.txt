@@ -1,0 +1,7 @@
+Implement filtering and template enhancements
+
+- Added django-filter setup with CashFlowFilter class
+- Updated record_list view to support filtering
+- Configured template directory in settings.py
+- Enhanced base template with date picker support
+- Improved record_list template with filter UI

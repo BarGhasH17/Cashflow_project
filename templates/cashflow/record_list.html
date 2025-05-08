@@ -5,7 +5,23 @@
 <div class="container mt-4">
     <h2>Cash Flow Records</h2>
     <a href="{% url 'add_record' %}" class="btn btn-primary mb-3">Add New Record</a>
-    
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Filter Records</h5>
+            <form method="get">
+                <div class="row g-3">
+                    {% for field in filter.form %}
+                    <div class="col-md-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Filter</button>
+                <a href="{% url 'record_list' %}" class="btn btn-secondary mt-3">Reset</a>
+            </form>
+        </div>
+    </div>
     <table class="table table-striped">
         <thead>
             <tr>
