@@ -1,6 +1,8 @@
-Enhance category management system
+Refactor cashflow filters, forms, and templates
 
-- Added dynamic category/subcategory creation
-- Improved form validation and error handling
-- Updated models and views for better data relationships
-- Streamlined template JavaScript code
+- Updated filters.py with consistent Bootstrap styling for all select inputs
+- Enhanced forms.py with proper date field handling
+- Improved template styling and responsive layouts
+- Modified models and migrations for category/type relationships
+- Adjusted settings and base template for better UI consistency
+- Added new migration for model changes

@@ -31,7 +31,8 @@ def add_record(request):
         'form': form,
         'statuses': Status.objects.all(),
         'types': Type.objects.all(),
-        'categories': Category.objects.all() 
+        'categories': Category.objects.all(),
+        'subcategories': Subcategory.objects.all()
     })  
 
 @csrf_exempt

@@ -2,114 +2,163 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Cash Flow Record</h2>
-    
-    <form method="post">
-        {% csrf_token %}
-        
-        <!-- Date Field -->
-        <div class="mb-3">
-            {{ form.date.label_tag }}
-            {{ form.date }}
-            <small class="text-muted">Leave blank to use today's date</small>
-            {% if form.date.errors %}<div class="text-danger">{{ form.date.errors }}</div>{% endif %}
+    <div class="card shadow-sm">  <!-- Added card with shadow -->
+        <div class="card-header bg-dark text-white">  <!-- Colored header -->
+            <h2 class="mb-0">{% if form.instance.pk %}Edit{% else %}Add{% endif %} Cash Flow Record</h2>
         </div>
-        
-        <!-- Status Field -->
-        <div class="mb-3">
-            <label class="form-label">Status:</label>
-            <div class="d-flex align-items-center gap-2">
-                <select name="status" id="status-select" class="form-select form-select-sm" required>
-                    <option value="" selected disabled>Select status...</option>
-                    {% for status in statuses %}
-                        <option value="{{ status.id }}">{{ status.name }}</option>
-                    {% endfor %}
-                </select>
-                <button type="button" id="add-status-btn" class="btn btn-sm btn-outline-secondary">+ Add</button>
-            </div>
-            <div id="new-status-container" class="mt-2 d-none">
-                <div class="input-group input-group-sm">
-                    <input type="text" id="new-status-input" class="form-control" placeholder="New status name">
-                    <button id="save-status-btn" class="btn btn-success" type="button">Save</button>
+        <div class="card-body">
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <div class="row g-3">  <!-- Using Bootstrap grid with gutters -->
+                    <!-- Date Field -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Date</label>
+                        <div id="date-select">  <!-- Floating labels for better UX -->
+                            {{ form.date }}
+                            {% if form.date.errors %}
+                                <div class="invalid-feedback d-block">{{ form.date.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Amount Field -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Amount</label>
+                        <div id="amount-select">
+                            {{ form.amount }}
+                            {% if form.amount.errors %}
+                                <div class="invalid-feedback d-block">{{ form.amount.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Status Field -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Status</label>
+                        <div class="input-group">
+                            <select name="status" id="status-select" class="form-select" required>
+                                <option value="" selected disabled>Select status...</option>
+                                {% for status in statuses %}
+                                    <option value="{{ status.id }}">{{ status.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" id="add-status-btn" class="btn btn-outline-dark">
+                                <i class="bi bi-plus-lg"></i> Add
+                            </button>
+                        </div>
+                        <div id="new-status-container" class="mt-2 d-none">
+                            <div class="input-group">
+                                <input type="text" id="new-status-input" class="form-control" placeholder="New status name">
+                                <button id="save-status-btn" class="btn btn-secondary" type="button">
+                                    <i class="bi bi-check-lg"></i> Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Type Field -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Type</label>
+                        <div class="input-group">
+                            <select name="type" id="type-select" class="form-select" required>
+                                <option value="" selected disabled>Select type...</option>
+                                {% for type in types %}
+                                    <option value="{{ type.id }}">{{ type.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" id="add-type-btn" class="btn btn-outline-dark">
+                                <i class="bi bi-plus-lg"></i> Add
+                            </button>
+                        </div>
+                        <div id="new-type-container" class="mt-2 d-none">
+                            <div class="input-group">
+                                <input type="text" id="new-type-input" class="form-control" placeholder="New type name">
+                                <button id="save-type-btn" class="btn btn-secondary" type="button">
+                                    <i class="bi bi-check-lg"></i> Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Category Field -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Category</label>
+                        <div class="input-group">
+                            <select name="category" id="id_category" class="form-select" required>
+                                <option value="" selected disabled>Select category...</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" id="add-category-btn" class="btn btn-outline-dark">
+                                <i class="bi bi-plus-lg"></i> Add
+                            </button>
+                        </div>
+                        <div id="new-category-container" class="mt-2 d-none">
+                            <div class="input-group">
+                                <input type="text" id="new-category-input" class="form-control" placeholder="New category name">
+                                <button id="save-category-btn" class="btn btn-secondary" type="button">
+                                    <i class="bi bi-check-lg"></i> Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Subcategory Field -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Subcategory</label>
+                        <div class="input-group">
+                            <select name="subcategory" id="id_subcategory" class="form-select" required>
+                                <option value="" selected disabled>Select subcategory...</option>
+                                {% for subcategory in subcategories %}
+                                    {% if subcategory.category.id == selected_category_id %}
+                                        <option value="{{ subcategory.id }}">
+                                            {{ subcategory.name }}
+                                        </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <button type="button" id="add-subcategory-btn" class="btn btn-outline-dark">
+                                <i class="bi bi-plus-lg"></i> Add
+                            </button>
+                        </div>
+                        <div id="new-subcategory-container" class="mt-2 d-none">
+                            <div class="input-group">
+                                <input type="text" id="new-subcategory-input" class="form-control" placeholder="New subcategory name">
+                                <button id="save-subcategory-btn" class="btn btn-secondary" type="button">
+                                    <i class="bi bi-check-lg"></i> Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Comment Field -->
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Comment</label>
+                        <div id="comment-select">
+                            {{ form.comment }}
+                            
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Type Field -->
-        <div class="mb-3">
-            <label class="form-label">Type:</label>
-            <div class="d-flex align-items-center gap-2">
-                <select name="type" id="type-select" class="form-select form-select-sm" required>
-                    <option value="" selected disabled>Select type...</option>
-                    {% for type in types %}
-                        <option value="{{ type.id }}">{{ type.name }}</option>
-                    {% endfor %}
-                </select>
-                <button type="button" id="add-type-btn" class="btn btn-sm btn-outline-secondary">+ Add</button>
-            </div>
-            <div id="new-type-container" class="mt-2 d-none">
-                <div class="input-group input-group-sm">
-                    <input type="text" id="new-type-input" class="form-control" placeholder="New type name">
-                    <button id="save-type-btn" class="btn btn-success" type="button">Save</button>
+                
+                <!-- Form Buttons -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'record_list' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-dark">
+                        <i class="bi bi-save"></i> Save Record
+                    </button>
                 </div>
-            </div>
+            </form>
         </div>
-        
-        <!-- Category Field -->
-        <div class="mb-3">
-            <label class="form-label">Category:</label>
-            <div class="d-flex align-items-center gap-2">
-                <select name="category" id="id_category" class="form-select form-select-sm" required>
-                    <option value="" selected disabled>Select category...</option>
-                    {% for category in categories %}
-                        <option value="{{ category.id }}">{{ category.name }}</option>
-                    {% endfor %}
-                </select>
-                <button type="button" id="add-category-btn" class="btn btn-sm btn-outline-secondary">+ Add</button>
-            </div>
-            <div id="new-category-container" class="mt-2 d-none">
-                <div class="input-group input-group-sm">
-                    <input type="text" id="new-category-input" class="form-control" placeholder="New category name">
-                    <button id="save-category-btn" class="btn btn-success" type="button">Save</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Subcategory Field -->
-        <div class="mb-3">
-            <label class="form-label">Subcategory:</label>
-            <div class="d-flex align-items-center gap-2">
-                <select name="subcategory" id="id_subcategory" class="form-select form-select-sm" required>
-                    <option value="" selected disabled>Select subcategory...</option>
-                </select>
-                <button type="button" id="add-subcategory-btn" class="btn btn-sm btn-outline-secondary">+ Add</button>
-            </div>
-            <div id="new-subcategory-container" class="mt-2 d-none">
-                <div class="input-group input-group-sm">
-                    <input type="text" id="new-subcategory-input" class="form-control" placeholder="New subcategory name">
-                    <button id="save-subcategory-btn" class="btn btn-success" type="button">Save</button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Amount Field -->
-        <div class="mb-3">
-            {{ form.amount.label_tag }}
-            {{ form.amount }}
-            {% if form.amount.errors %}<div class="text-danger">{{ form.amount.errors }}</div>{% endif %}
-        </div>
-        
-        <!-- Comment Field -->
-        <div class="mb-3">
-            {{ form.comment.label_tag }}
-            {{ form.comment }}
-        </div>
-        
-        <!-- Form Buttons -->
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a href="{% url 'record_list' %}" class="btn btn-secondary">Cancel</a>
-    </form>
+    </div>
 </div>
+
+<!-- Add this for Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <!-- JavaScript -->
 <script>
@@ -181,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'new-type-input', 'save-type-btn', '/type/quick-add/'
     );
 
-    /// Category setup with type_id validation
+    // Category setup with type_id validation
     setupAddField(
         'id_category', 'add-category-btn', 'new-category-container',
         'new-category-input', 'save-category-btn', '/category/quick-add/',
@@ -212,37 +261,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 return categoryId;
             }
         }
+    
     );
-
-    // Category/Subcategory dynamic filtering (unchanged)
-    document.getElementById("id_type").addEventListener("change", function() {
-        const typeId = this.value;
-        fetch(`/get_categories/?type_id=${typeId}`)
-            .then(response => response.json())
-            .then(data => {
-                const select = document.getElementById("id_category");
-                select.innerHTML = '<option value="" selected disabled>Select category...</option>';
-                data.forEach(item => {
-                    select.add(new Option(item.name, item.id));
-                });
-                // Clear subcategories when type changes
-                document.getElementById("id_subcategory").innerHTML = 
-                    '<option value="" selected disabled>Select subcategory...</option>';
-            });
-    });
-
-    document.getElementById("id_category").addEventListener("change", function() {
-        const categoryId = this.value;
-        fetch(`/get_subcategories/?category_id=${categoryId}`)
-            .then(response => response.json())
-            .then(data => {
-                const select = document.getElementById("id_subcategory");
-                select.innerHTML = '<option value="" selected disabled>Select subcategory...</option>';
-                data.forEach(item => {
-                    select.add(new Option(item.name, item.id));
-                });
-            });
+    
+});
+document.getElementById("id_category").addEventListener("change", function() {
+    const categoryId = this.value;
+    fetch(`/get_subcategories/?category_id=${categoryId}`)
+        .then(response => response.json())
+        .then(data => {
+            const select = document.getElementById("id_subcategory");
+            select.innerHTML = '<option value="" selected disabled>Select subcategory...</option>';
+            data.forEach(item => {
+                select.add(new Option(item.name, item.id));
         });
     });
+});
+// document.getElementById('categorySelect').addEventListener('change', function() {
+//         const categoryId = this.value;
+//         const subcategorySelect = document.getElementById('subcategorySelect');
+        
+//         // Disable subcategory dropdown if no category is selected
+//         subcategorySelect.disabled = !categoryId;
+
+//         // Filter subcategories in the template (if preloaded)
+//         const allSubcategoryOptions = subcategorySelect.querySelectorAll('option');
+//         allSubcategoryOptions.forEach(option => {
+//             const showOption = option.value === "" || option.dataset.categoryId === categoryId;
+//             option.style.display = showOption ? 'block' : 'none';
+//         });
+// })
 </script>
 {% endblock %}

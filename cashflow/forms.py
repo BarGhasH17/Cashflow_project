@@ -1,6 +1,5 @@
 from django import forms
 from .models import CashFlowRecord
-from django.utils import timezone
 
 class CashFlowForm(forms.ModelForm):
     new_status = forms.CharField(
@@ -21,6 +20,24 @@ class CashFlowForm(forms.ModelForm):
     class Meta:
         model = CashFlowRecord
         fields = '__all__'
+        widgets = {
+            'date': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control',
+                'id': 'date-select'
+            }),
+            'amount': forms.TextInput(attrs={
+                'type': 'number',
+                'class': 'form-control',
+                'id': 'amount-select'
+            }),
+            'comment': forms.Textarea(attrs={
+                'class': 'form-control',
+                'id': 'comment-select',
+                "rows": "4"
+            }),
+        }
+        
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -14,24 +14,20 @@ class Type(models.Model):
         return self.name
 
 class Category(models.Model):
-    name = models.CharField(max_length=50)
-    type = models.ForeignKey(Type, on_delete=models.CASCADE)  # Category belongs to a Type
+    name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
 
 class Subcategory(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)  
 
     def __str__(self):
         return self.name
 
 class CashFlowRecord(models.Model):
-    date = models.DateField(
-        default=timezone.now,  # Auto-fills with current date
-        verbose_name="Record Date"
-    )
+    date = models.DateField(default=timezone.now)
     status = models.ForeignKey(Status, on_delete=models.PROTECT)
     type = models.ForeignKey(Type, on_delete=models.PROTECT)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
