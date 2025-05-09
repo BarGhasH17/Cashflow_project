@@ -1,6 +1,6 @@
-Clean up templates and views
+Enhance category management system
 
-- Streamlined views.py organization and removed duplicates
-- Improved template structure and consistency
-- Enhanced code readability with better formatting
-- Removed unused message.txt file
+- Added dynamic category/subcategory creation
+- Improved form validation and error handling
+- Updated models and views for better data relationships
+- Streamlined template JavaScript code
