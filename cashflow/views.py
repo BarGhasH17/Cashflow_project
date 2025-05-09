@@ -65,11 +65,7 @@ def quick_add_type(request):
 @csrf_exempt
 def quick_add_category(request):
     if request.method == 'POST':
-        type_id = request.POST.get('type_id')
         name = request.POST.get('name', '').strip()
-        
-        if not type_id:
-            return JsonResponse({'error': 'Type ID is required'}, status=400)
         
         if not name:
             return JsonResponse({'error': 'Name is required'}, status=400)
@@ -77,7 +73,6 @@ def quick_add_category(request):
         try:
             category = Category.objects.create(
                 name=name,
-                type_id=type_id
             )
             return JsonResponse({
                 'id': category.id,

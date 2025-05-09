@@ -234,17 +234,6 @@ document.addEventListener('DOMContentLoaded', function() {
     setupAddField(
         'id_category', 'add-category-btn', 'new-category-container',
         'new-category-input', 'save-category-btn', '/category/quick-add/',
-        {
-            'type_id': () => {
-                const typeSelect = document.getElementById('type-select');
-                if (!typeSelect.value) {
-                    alert('Please select a type first');
-                    typeSelect.focus();
-                    return null;
-                }
-                return typeSelect.value;
-            }
-        }
     );
 
     // Initialize subcategory field with category relationship
@@ -277,19 +266,5 @@ document.getElementById("id_category").addEventListener("change", function() {
         });
     });
 });
-// document.getElementById('categorySelect').addEventListener('change', function() {
-//         const categoryId = this.value;
-//         const subcategorySelect = document.getElementById('subcategorySelect');
-        
-//         // Disable subcategory dropdown if no category is selected
-//         subcategorySelect.disabled = !categoryId;
-
-//         // Filter subcategories in the template (if preloaded)
-//         const allSubcategoryOptions = subcategorySelect.querySelectorAll('option');
-//         allSubcategoryOptions.forEach(option => {
-//             const showOption = option.value === "" || option.dataset.categoryId === categoryId;
-//             option.style.display = showOption ? 'block' : 'none';
-//         });
-// })
 </script>
 {% endblock %}
