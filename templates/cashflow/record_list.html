@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 <div class="container mt-4">
     <!-- Page Header with Action Buttons -->
@@ -52,7 +52,7 @@
     </div>
 
     <!-- Records Table -->
-    <table class="table table-striped">
+    <table class="table table-striped" data-csrf-token="{{ csrf_token }}">
         <thead class="table-dark">
             <tr>
                 <th>Date</th>
@@ -108,7 +108,7 @@
 
 
 <!-- Add this JavaScript at the bottom of your template -->
-<script>
+<!-- <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Handle delete button clicks
     document.querySelectorAll('.delete-btn').forEach(btn => {
@@ -140,5 +140,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-</script>
+</script> -->
+<!-- <script src="{% static 'js/cashflow/record_list.js' %}"></script> -->
 {% endblock %}
