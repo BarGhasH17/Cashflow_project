@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import CashFlowRecord, Status, Type, Category, Subcategory
 from .filters import CashFlowFilter
 from .forms import CashFlowForm
+from django.views.decorators.http import require_POST
 
 
 def record_list(request):
@@ -156,3 +157,44 @@ def get_subcategories(request):
     category_id = request.GET.get('category_id')
     subcategories = Subcategory.objects.filter(category_id=category_id).values('id', 'name')
     return JsonResponse(list(subcategories), safe=False)
+
+@require_POST
+def delete_record(request, pk):
+    """
+    Handle DELETE requests for CashFlowRecord instances.
+    
+    This view safely deletes a cash flow record after validating:
+    - The request method is POST (enforced by decorator)
+    - The record exists in the database
+    - The operation completes successfully
+
+    Args:
+        request: HttpRequest object
+        pk: Primary key of the CashFlowRecord to delete
+
+    Returns:
+        JsonResponse: 
+            - {'status': 'success'} on successful deletion (200)
+            - {'status': 'error', 'message': str} on failure (4xx/5xx)
+
+    Raises:
+        Http404: If record doesn't exist (converted to JSON response)
+        PermissionDenied: If authorization checks fail (not shown here)
+    """
+    try:
+        # Safely retrieve the record from database
+        record = CashFlowRecord.objects.get(pk=pk)
+
+        # Perform the deletion
+        record.delete()
+
+        # Return success response
+        return JsonResponse({'status': 'success', 'message': f'Record {pk} deleted successfully'})
+    
+    except CashFlowRecord.DoesNotExist:
+        # Handle missing record case
+        return JsonResponse({'status': 'error', 'message': f'Record {pk} not found in database'}, status=404)
+    
+    except Exception as e:
+        # Catch-all for other exceptions (database errors, etc)
+        return JsonResponse({'status': 'error', 'message': f'Server error: {str(e)}'}, status=500)

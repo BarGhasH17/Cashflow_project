@@ -10,4 +10,5 @@ urlpatterns = [
     path('type/quick-add/', views.quick_add_type, name='quick_add_type'),
     path('category/quick-add/', views.quick_add_category, name='quick_add_category'),
     path('subcategory/quick-add/', views.quick_add_subcategory, name='quick_add_subcategory'),
+    path('delete/<int:pk>/', views.delete_record, name='delete_record'),
 ]
