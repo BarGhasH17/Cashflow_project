@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from .models import CashFlowRecord, Status, Type, Category, Subcategory
 from .filters import CashFlowFilter
 from .forms import CashFlowForm

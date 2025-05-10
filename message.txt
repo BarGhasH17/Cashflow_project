@@ -1,5 +1,5 @@
-Improve static files and deletion handling
+Add form validation and testing
 
-- Configure static files in settings.py
-- Update base template structure
-- Enhance record deletion functionality
+- Added form validation for amounts and relationships
+- Restructured tests into /tests package
+- Maintained existing functionality
