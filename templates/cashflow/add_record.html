@@ -1,20 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<!-- Main form container with card styling -->
 <div class="container mt-4">
-    <div class="card shadow-sm">  <!-- Added card with shadow -->
-        <div class="card-header bg-dark text-white">  <!-- Colored header -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
             <h2 class="mb-0">{% if form.instance.pk %}Edit{% else %}Add{% endif %} Cash Flow Record</h2>
         </div>
         <div class="card-body">
+            <!-- Form with validation and CSRF protection -->
             <form method="post" class="needs-validation" novalidate>
                 {% csrf_token %}
                 
-                <div class="row g-3">  <!-- Using Bootstrap grid with gutters -->
-                    <!-- Date Field -->
+                <!-- Responsive form grid layout -->
+                <div class="row g-3">
+                    <!-- Date Input Field -->
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Date</label>
-                        <div id="date-select">  <!-- Floating labels for better UX -->
+                        <div id="date-select">
                             {{ form.date }}
                             {% if form.date.errors %}
                                 <div class="invalid-feedback d-block">{{ form.date.errors }}</div>
@@ -22,7 +25,7 @@
                         </div>
                     </div>
                     
-                    <!-- Amount Field -->
+                    <!-- Amount Input Field -->
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Amount</label>
                         <div id="amount-select">
@@ -33,7 +36,7 @@
                         </div>
                     </div>
                     
-                    <!-- Status Field -->
+                    <!-- Status Selection with Add New Option -->
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Status</label>
                         <div class="input-group">
@@ -57,7 +60,7 @@
                         </div>
                     </div>
                     
-                    <!-- Type Field -->
+                    <!-- Type Selection with Add New Option -->
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Type</label>
                         <div class="input-group">
@@ -81,7 +84,7 @@
                         </div>
                     </div>
                     
-                    <!-- Category Field -->
+                    <!-- Category Selection with Add New Option -->
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Category</label>
                         <div class="input-group">
@@ -105,7 +108,7 @@
                         </div>
                     </div>
                     
-                    <!-- Subcategory Field -->
+                    <!-- Subcategory Selection (dynamic based on category) -->
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Subcategory</label>
                         <div class="input-group">
@@ -138,12 +141,11 @@
                         <label class="form-label fw-bold">Comment</label>
                         <div id="comment-select">
                             {{ form.comment }}
-                            
                         </div>
                     </div>
                 </div>
                 
-                <!-- Form Buttons -->
+                <!-- Form Action Buttons -->
                 <div class="d-flex justify-content-between mt-4">
                     <a href="{% url 'record_list' %}" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-left"></i> Cancel
@@ -157,13 +159,22 @@
     </div>
 </div>
 
-<!-- Add this for Bootstrap Icons -->
+<!-- Bootstrap Icons CDN -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-<!-- JavaScript -->
+<!-- Form Interaction JavaScript -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Enhanced setupAddField function with relationship support
+    /**
+     * Generic function to handle dynamic field addition
+     * @param {string} selectId - ID of the select element
+     * @param {string} addBtnId - ID of the "Add" button
+     * @param {string} containerId - ID of the new input container
+     * @param {string} inputId - ID of the new input field
+     * @param {string} saveBtnId - ID of the save button
+     * @param {string} endpoint - API endpoint for saving
+     * @param {Object} extraParams - Additional parameters for the request
+     */
     const setupAddField = (selectId, addBtnId, containerId, inputId, saveBtnId, endpoint, extraParams = {}) => {
         const select = document.getElementById(selectId);
         const addBtn = document.getElementById(addBtnId);
@@ -171,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const input = document.getElementById(inputId);
         const saveBtn = document.getElementById(saveBtnId);
 
+        // Toggle new input field visibility
         addBtn.addEventListener('click', () => {
             container.classList.toggle('d-none');
             input.focus();
@@ -180,7 +192,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const value = input.value.trim();
             if (!value) return;
             
-            // Build form data with additional parameters
             const formData = new URLSearchParams();
             formData.append('name', value);
             
@@ -190,6 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (paramValue) formData.append(param, paramValue);
             }
             
+            // Save new value via AJAX
             fetch(endpoint, {
                 method: 'POST',
                 headers: {
@@ -220,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('keypress', (e) => e.key === 'Enter' && saveHandler());
     };
 
-    // Initialize status and type fields (unchanged)
+    // Initialize dynamic field additions
     setupAddField(
         'status-select', 'add-status-btn', 'new-status-container', 
         'new-status-input', 'save-status-btn', '/status/quick-add/'
@@ -229,14 +241,10 @@ document.addEventListener('DOMContentLoaded', function() {
         'type-select', 'add-type-btn', 'new-type-container', 
         'new-type-input', 'save-type-btn', '/type/quick-add/'
     );
-
-    // Category setup with type_id validation
     setupAddField(
         'id_category', 'add-category-btn', 'new-category-container',
-        'new-category-input', 'save-category-btn', '/category/quick-add/',
+        'new-category-input', 'save-category-btn', '/category/quick-add/'
     );
-
-    // Initialize subcategory field with category relationship
     setupAddField(
         'id_subcategory', 'add-subcategory-btn', 'new-subcategory-container',
         'new-subcategory-input', 'save-subcategory-btn', '/subcategory/quick-add/',
@@ -250,20 +258,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 return categoryId;
             }
         }
-    
     );
     
-});
-document.getElementById("id_category").addEventListener("change", function() {
-    const categoryId = this.value;
-    fetch(`/get_subcategories/?category_id=${categoryId}`)
-        .then(response => response.json())
-        .then(data => {
-            const select = document.getElementById("id_subcategory");
-            select.innerHTML = '<option value="" selected disabled>Select subcategory...</option>';
-            data.forEach(item => {
-                select.add(new Option(item.name, item.id));
-        });
+    // Dynamic subcategory loading based on category selection
+    document.getElementById("id_category").addEventListener("change", function() {
+        const categoryId = this.value;
+        if (!categoryId) return;
+        
+        fetch(`/get_subcategories/?category_id=${categoryId}`)
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById("id_subcategory");
+                select.innerHTML = '<option value="" selected disabled>Select subcategory...</option>';
+                data.forEach(item => {
+                    select.add(new Option(item.name, item.id));
+                });
+            });
     });
 });
 </script>

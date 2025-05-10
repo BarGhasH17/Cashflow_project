@@ -1,28 +1,29 @@
-<!-- templates/cashflow/record_list.html -->
 {% extends 'base.html' %}
 
 {% block content %}
 <div class="container mt-4">
+    <!-- Page Header with Action Buttons -->
     <h2>Cash Flow Records</h2>
-    <a href="{% url 'add_record' %}" class="btn btn-dark mb-3">Add New Record</a>
-    <button class="btn btn-dark mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterSection">
-        Toggle Filters
-    </button>
+    <div class="mb-3">
+        <a href="{% url 'add_record' %}" class="btn btn-dark mb-3">Add New Record</a>
+        <button class="btn btn-dark mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterSection">
+            Toggle Filters
+        </button>
+    </div>
 
-    <!-- Filter Card (Improved Styling) -->
+    <!-- Filter Section -->
     <div id="filterSection" class="collapse mb-4">
-        <div class="card border-dark shadow-sm">  <!-- Added shadow and border -->
-            <div class="card-header bg-dark text-white">  <!-- Dark header -->
+        <div class="card border-dark shadow-sm">
+            <div class="card-header bg-dark text-white">
                 <h5 class="card-title mb-0">
                     <i class="bi bi-filter-circle me-2"></i> Filter Records
                 </h5>
             </div>
-            <div class="card-body bg-light">  <!-- Light background for contrast -->
+            <div class="card-body bg-light">
                 <form method="get" class="needs-validation" novalidate>
-                    <div class="row g-3">  <!-- Added g-3 for consistent gutters -->
+                    <div class="row g-3">
                         {% for field in filter.form %}
-                        {% if field.name == 'date' %}
-                        <div class="col-md-8 col-sm-6">  <!-- Responsive columns -->
+                        <div class="{% if field.name == 'date' %}col-md-8{% else %}col-md-4{% endif %} col-sm-6">
                             <div class="mb-3">
                                 <label for="{{ field.id_for_label }}" class="form-label fw-bold">
                                     {{ field.label }}
@@ -33,22 +34,9 @@
                                 {% endif %}
                             </div>
                         </div>
-                        {% else %}
-                        <div class="col-md-4 col-sm-6">  <!-- Responsive columns -->
-                            <div class="mb-3">
-                                <label for="{{ field.id_for_label }}" class="form-label fw-bold">
-                                    {{ field.label }}
-                                </label>
-                                {{ field }}
-                                {% if field.help_text %}
-                                    <small class="form-text text-muted">{{ field.help_text }}</small>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% endif %}
                         {% endfor %}
                     </div>
-                    <div class="d-flex justify-content-between mt-4">  <!-- Better button alignment -->
+                    <div class="d-flex justify-content-between mt-4">
                         <div>
                             <button type="submit" class="btn btn-dark px-4">
                                 <i class="bi bi-search me-1"></i> Apply Filters
@@ -62,28 +50,10 @@
             </div>
         </div>
     </div>
-    <!-- Filter section with collapse -->
-    <!-- <div id="filterSection" class="collapse">
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Filter Records</h5>
-                <form method="get">
-                    <div class="row">
-                        {% for field in filter.form %}
-                        <div class="col-md-3">
-                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                            {{ field }}
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <button type="submit" class="btn btn-dark mt-3">Filter</button>
-                    <a href="{% url 'record_list' %}" class="btn btn-secondary mt-3">Reset</a>
-                </form>
-            </div>
-        </div>
-    </div> -->
+
+    <!-- Records Table -->
     <table class="table table-striped">
-        <thead>
+        <thead class="table-dark">
             <tr>
                 <th>Date</th>
                 <th>Status</th>
@@ -103,11 +73,11 @@
                 <td>{{ record.category.name }}</td>
                 <td>{{ record.subcategory.name }}</td>
                 <td>{{ record.amount }} ₽</td>
-                <td>{{ record.comment|default:"" }}</td>
+                <td>{{ record.comment|default:""|truncatechars:50 }}</td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="7">No records found.</td>
+                <td colspan="7" class="text-center py-4">No records found matching your filters.</td>
             </tr>
             {% endfor %}
         </tbody>

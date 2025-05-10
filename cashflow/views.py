@@ -7,7 +7,10 @@ from .forms import CashFlowForm
 
 
 def record_list(request):
-    """Display filtered list of cash flow records"""
+    """
+    Display and filter cash flow records.
+    Returns a paginated list of records ordered by date (newest first).
+    """
     records = CashFlowRecord.objects.all().order_by('-date')
     record_filter = CashFlowFilter(request.GET, queryset=records)
     
@@ -18,7 +21,11 @@ def record_list(request):
 
 
 def add_record(request):
-    """Handle creation of new cash flow records"""
+    """
+    Handle cash flow record creation.
+    On POST: Validates form data and creates new record if valid.
+    On GET: Returns empty form for record creation.
+    """
     if request.method == 'POST':
         form = CashFlowForm(request.POST)
         if form.is_valid():
@@ -33,11 +40,16 @@ def add_record(request):
         'types': Type.objects.all(),
         'categories': Category.objects.all(),
         'subcategories': Subcategory.objects.all()
-    })  
+    })
+
 
 @csrf_exempt
 def quick_add_status(request):
-    """AJAX endpoint for adding new statuses"""
+    """
+    API endpoint for adding new statuses via AJAX.
+    Expects POST with 'name' parameter.
+    Returns JSON with new status data or error message.
+    """
     if request.method == 'POST':
         status_name = request.POST.get('name', '').strip()
         if status_name:
@@ -51,7 +63,11 @@ def quick_add_status(request):
 
 @csrf_exempt
 def quick_add_type(request):
-    """AJAX endpoint for adding new types"""
+    """
+    API endpoint for adding new types via AJAX.
+    Expects POST with 'name' parameter.
+    Returns JSON with new type data or error message.
+    """
     if request.method == 'POST':
         type_name = request.POST.get('name', '').strip()
         if type_name:
@@ -62,8 +78,14 @@ def quick_add_type(request):
             })
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+
 @csrf_exempt
 def quick_add_category(request):
+    """
+    API endpoint for adding new categories via AJAX.
+    Expects POST with 'name' parameter.
+    Returns JSON with new category data or validation errors.
+    """
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         
@@ -71,9 +93,7 @@ def quick_add_category(request):
             return JsonResponse({'error': 'Name is required'}, status=400)
             
         try:
-            category = Category.objects.create(
-                name=name,
-            )
+            category = Category.objects.create(name=name)
             return JsonResponse({
                 'id': category.id,
                 'name': category.name
@@ -83,8 +103,14 @@ def quick_add_category(request):
     
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
+
 @csrf_exempt
 def quick_add_subcategory(request):
+    """
+    API endpoint for adding new subcategories via AJAX.
+    Expects POST with 'category_id' and 'name' parameters.
+    Returns JSON with new subcategory data or validation errors.
+    """
     if request.method == 'POST':
         category_id = request.POST.get('category_id')
         name = request.POST.get('name', '').strip()
@@ -109,15 +135,24 @@ def quick_add_subcategory(request):
     
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
+
 def get_categories(request):
-    """AJAX endpoint for fetching categories by type"""
+    """
+    API endpoint for fetching categories filtered by type.
+    Expects GET parameter 'type_id'.
+    Returns JSON list of categories with id and name.
+    """
     type_id = request.GET.get('type_id')
     categories = Category.objects.filter(type_id=type_id).values('id', 'name')
     return JsonResponse(list(categories), safe=False)
 
 
 def get_subcategories(request):
-    """AJAX endpoint for fetching subcategories by category"""
+    """
+    API endpoint for fetching subcategories filtered by category.
+    Expects GET parameter 'category_id'.
+    Returns JSON list of subcategories with id and name.
+    """
     category_id = request.GET.get('category_id')
     subcategories = Subcategory.objects.filter(category_id=category_id).values('id', 'name')
     return JsonResponse(list(subcategories), safe=False)

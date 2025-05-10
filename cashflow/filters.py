@@ -2,7 +2,18 @@ import django_filters
 from django import forms
 from .models import CashFlowRecord
 
+
 class CashFlowFilter(django_filters.FilterSet):
+    """
+    FilterSet for querying CashFlowRecord instances with advanced filtering capabilities.
+    Provides range-based date filtering and exact match filters for related models.
+    
+    Features:
+    - Date range filtering with custom widget
+    - Consistent styling for all filter controls
+    - Exact match filters for status, type, category, and subcategory
+    """
+    
     date = django_filters.DateFromToRangeFilter(
         field_name='date',
         label='Date Range',
@@ -22,6 +33,10 @@ class CashFlowFilter(django_filters.FilterSet):
         }
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialize the filter with consistent Bootstrap form styling.
+        Applies uniform 'form-select' classes to all select inputs.
+        """
         super().__init__(*args, **kwargs)
         
         # Apply consistent styling to all select inputs
