@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load i18n %}
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -12,9 +13,26 @@
     </head>
     <body>
         <!-- Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
-            <div class="container">
-                <a class="navbar-brand" href="{% url 'record_list' %}">Cash Flow</a>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container"> 
+                <a class="navbar-brand" href="#">{% trans "CashFlow" %}</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <form action="{% url 'set_language' %}" method="post" class="d-flex">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    {% get_current_language as LANGUAGE_CODE %}
+                    {% if LANGUAGE_CODE == 'en' %}
+                        <input type="hidden" name="language" value="ru">
+                        <button type="submit" class="btn btn-outline-light">Русский</button>
+                    {% else %}
+                        <input type="hidden" name="language" value="en">
+                        <button type="submit" class="btn btn-outline-light">English</button>
+                    {% endif %}
+                </form>
+                </div>
             </div>
         </nav>
         

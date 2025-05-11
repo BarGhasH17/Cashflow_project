@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 {% block content %}
 <div class="container mt-4">
     <!-- Page Header with Action Buttons -->
-    <h2>Cash Flow Records</h2>
+    <h2>{% trans "Cash Flow Records" %}</h2>
     <div class="mb-3">
-        <a href="{% url 'add_record' %}" class="btn btn-dark mb-3">Add New Record</a>
+        <a href="{% url 'add_record' %}" class="btn btn-dark mb-3">{% trans "Add New Record" %}</a>
         <button class="btn btn-dark mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterSection">
-            Toggle Filters
+            {% trans "Toggle Filters" %}
         </button>
     </div>
 
@@ -16,7 +17,7 @@
         <div class="card border-dark shadow-sm">
             <div class="card-header bg-dark text-white">
                 <h5 class="card-title mb-0">
-                    <i class="bi bi-filter-circle me-2"></i> Filter Records
+                    <i class="bi bi-filter-circle me-2"></i> {% trans "Filter Records" %}
                 </h5>
             </div>
             <div class="card-body bg-light">
@@ -39,10 +40,10 @@
                     <div class="d-flex justify-content-between mt-4">
                         <div>
                             <button type="submit" class="btn btn-dark px-4">
-                                <i class="bi bi-search me-1"></i> Apply Filters
+                                <i class="bi bi-search me-1"></i> {% trans "Apply Filters" %}
                             </button>
                             <a href="{% url 'record_list' %}" class="btn btn-outline-secondary px-4 ms-2">
-                                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                                <i class="bi bi-arrow-counterclockwise me-1"></i> {% trans "Reset" %}
                             </a>
                         </div>
                     </div>
@@ -55,14 +56,14 @@
     <table class="table table-striped" data-csrf-token="{{ csrf_token }}">
         <thead class="table-dark">
             <tr>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Type</th>
-                <th>Category</th>
-                <th>Subcategory</th>
-                <th>Amount</th>
-                <th>Comment</th>
-                <th>Actions</th>  <!-- New column for delete button -->
+                <th>{% trans "Date" %}</th>
+                <th>{% trans "Status" %}</th>
+                <th>{% trans "Type" %}</th>
+                <th>{% trans "Category" %}</th>
+                <th>{% trans "Subcategory" %}</th>
+                <th>{% trans "Amount" %}</th>
+                <th>{% trans "Comment" %}</th>
+                <th>{% trans "Actions" %}</th>  <!-- New column for delete button -->
             </tr>
         </thead>
         <tbody>
@@ -78,19 +79,19 @@
                 <td class="text-center">
                     <button class="btn btn-danger btn-sm delete-btn me-1 d-inline-block" 
                             data-record-id="{{ record.id }}"
-                            title="Delete record">
+                            title="{% trans 'Delete record' %}">
                         <i class="bi bi-trash"></i>
                     </button>
                     <button class="btn btn-success btn-sm edit-btn d-inline-block" 
                             data-record-id="{{ record.id }}"
-                            title="Edit record">
+                            title="{% trans 'Edit record' %}">
                         <i class="bi bi-pencil-square"></i>
                     </button>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="8" class="text-center py-4">No records found matching your filters.</td>
+                <td colspan="8" class="text-center py-4">{% trans "No records found matching your filters." %}</td>
             </tr>
             {% endfor %}
         </tbody>

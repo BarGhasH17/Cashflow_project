@@ -1,6 +1,7 @@
 import django_filters
 from django import forms
 from .models import CashFlowRecord
+from django.utils.translation import gettext as _
 
 
 class CashFlowFilter(django_filters.FilterSet):
@@ -16,7 +17,7 @@ class CashFlowFilter(django_filters.FilterSet):
     
     date = django_filters.DateFromToRangeFilter(
         field_name='date',
-        label='Date Range',
+        label=_('Date Range'),
         widget=django_filters.widgets.RangeWidget(attrs={
             'type': 'date',
             'class': 'form-control form-control-sm'
