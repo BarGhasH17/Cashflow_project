@@ -10,7 +10,7 @@
         </div>
         <div class="card-body">
             <!-- Form with validation and CSRF protection -->
-            <form method="post" action="{% if is_edit %}/edit-record/{{ record_id }}/{% else %}/add-record/{% endif %}" class="needs-validation" novalidate>
+            <form method="post" action="{% if is_edit %}/edit-record/{{ record_id }}/{% else %}{% url 'add_record' %}{% endif %}" class="needs-validation" novalidate>
                 {% csrf_token %}
                 
                 <!-- Responsive form grid layout -->
