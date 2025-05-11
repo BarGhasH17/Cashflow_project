@@ -1,3 +1,4 @@
+from django.db.utils import IntegrityError
 from django.test import TestCase
 from cashflow.forms import CashFlowForm
 from cashflow.models import Status, Type, Category, Subcategory, CashFlowRecord
@@ -52,3 +53,39 @@ class ModelTests(TestCase):
         form = CashFlowForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertIn('amount', form.errors)  
+
+    def test_status_str(self):
+      status = Status.objects.create(name='Pending')
+      self.assertEqual(str(status), 'Pending')
+
+    def test_type_str(self):
+      type = Type.objects.create(name='Pending')
+      self.assertEqual(str(type), 'Pending')
+
+    def test_category_str(self):
+      category = Category.objects.create(name='Pending')
+      self.assertEqual(str(category), 'Pending')
+
+    def test_subcategory_str(self):
+      subcategory = Subcategory.objects.create(name='Pending', category=Category.objects.create(name='Pending'))
+      self.assertEqual(str(subcategory), 'Pending')
+
+    def test_unique_status_name(self):
+      Status.objects.create(name='Approved')
+      with self.assertRaises(IntegrityError):
+          Status.objects.create(name='Approved')
+
+    def test_unique_type_name(self):
+      Type.objects.create(name='Approved')
+      with self.assertRaises(IntegrityError):
+          Type.objects.create(name='Approved')
+
+    def test_unique_category_name(self):
+      Category.objects.create(name='Approved')
+      with self.assertRaises(IntegrityError):
+          Category.objects.create(name='Approved')
+
+    def test_unique_subcategory_name(self):
+      Subcategory.objects.create(name='Approved', category=Category.objects.create(name='Approved'))
+      with self.assertRaises(IntegrityError):
+          Subcategory.objects.create(name='Approved', category=Category.objects.create(name='Approved'))

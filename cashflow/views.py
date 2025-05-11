@@ -215,7 +215,6 @@ def edit_record(request, pk):
         'form': form,
         'is_edit': True,
         'record_id': record.id,
-        'all_forms': all_forms,
         'statuses': Status.objects.all(),
         'types': Type.objects.all(),
         'categories': Category.objects.all(),
