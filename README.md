@@ -1,82 +1,112 @@
-# Cashflow Project
+# Cashflow Project / Проект учета ДДС
 
 A web application for managing cash flow (ДДС – движение денежных средств), built with Django and SQLite.
 
-## Features
+Веб-приложение для управления движением денежных средств (ДДС), созданное с использованием Django и SQLite.
 
-- **Create, edit, delete, and view** cash‑flow records.
-- Record fields:
-  - **Date** (auto‑filled, editable)
-  - **Status** – Business, Personal, Tax (the list is fully editable)
-  - **Type** – Income, Expense (the list is fully editable)
-  - **Category** and **Subcategory** (hierarchical, user‑defined)
-  - **Amount** in RUB
-  - Optional **Comment**
-- **Filter** records by date range, status, type, category, and subcategory.
-- **Manage reference lists** (status, type, category, subcategory) from the admin panel or a dedicated UI.
-- **Logical dependencies**
-  - Categories belong to specific types.
-  - Subcategories belong to specific categories.
-- **Validation** on both client and server sides.
+---
 
-## Tech Stack
+## Features / Возможности
 
-| Layer      | Technology          |
-|------------|---------------------|
-| Backend    | Django 4.x          |
-| Database   | SQLite (plug‑and‑play with PostgreSQL) |
-| Front‑end  | Django templates + Bootstrap + vanilla JS |
-| Admin      | Django Admin (extended) |
+- **Create, edit, delete, and view** cash‑flow records.  
+  **Создание, редактирование, удаление и просмотр** записей о движении денежных средств.
+- Record fields / Поля записи:
+  - **Date** (auto‑filled, editable) / **Дата** (заполняется автоматически, редактируемая)
+  - **Status** – Business, Personal, Tax (editable list)  
+    **Статус** – Бизнес, Личное, Налог (редактируемый список)
+  - **Type** – Income, Expense (editable list)  
+    **Тип** – Пополнение, Списание (редактируемый список)
+  - **Category** and **Subcategory** (hierarchical, user‑defined)  
+    **Категория** и **Подкатегория** (иерархические, настраиваемые пользователем)
+  - **Amount** in RUB / **Сумма** в рублях
+  - Optional **Comment** / Необязательный **Комментарий**
+- **Filter** records by various fields  
+  **Фильтрация** записей по дате, статусу, типу, категории и подкатегории
+- **Manage reference lists** (status, type, category, subcategory)  
+  **Управление справочниками** (статус, тип, категория, подкатегория)
+- **Logical dependencies**  
+  **Логические зависимости**:
+  - Categories belong to specific types  
+    Категории привязаны к определенным типам
+  - Subcategories belong to specific categories  
+    Подкатегории привязаны к категориям
+- **Validation** on both client and server sides  
+  **Валидация данных** на стороне клиента и сервера
 
-## Installation
+---
 
-### 1. Clone the repository
+## Tech Stack / Технологии
+
+| Layer / Уровень | Technology / Технология     |
+|------------------|-----------------------------|
+| Backend / Сервер | Django 4.x                  |
+| Database / БД    | SQLite                      |
+| Front‑end        | Django templates + Bootstrap |
+| Admin            | Django Admin (расширенная)  |
+
+---
+
+## Installation / Установка
+
+### 1. Clone the repository / Клонировать репозиторий
 ```bash
 git clone https://github.com/BarGhasH17/Cashflow_project.git
 cd Cashflow_project
 ```
 
-### 2. Create a virtual environment
+### 2. Create a virtual environment / Создать виртуальное окружение
 ```bash
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scriptsctivate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 ```
 
-### 3. Install dependencies
+### 3. Install dependencies / Установить зависимости
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Apply migrations
+### 4. Apply migrations / Применить миграции
 ```bash
 python manage.py migrate
 ```
 
-### 5. (Optional) Create a super‑user
+### 5. (Optional) Create superuser / Создать суперпользователя (по желанию)
 ```bash
 python manage.py createsuperuser
 ```
 
-### 6. Run the development server
+### 6. Run the server / Запустить сервер
 ```bash
 python manage.py runserver
 ```
 
-Open <http://127.0.0.1:8000/> in your browser.
+Open in browser / Открыть в браузере:  
+<http://127.0.0.1:8000/>
 
-## Admin Panel
+---
+
+## Admin Panel / Админ-панель
 
 - URL: <http://127.0.0.1:8000/admin/>
-- Manage statuses, types, categories, subcategories, and cash‑flow records.
+- Manage all records and dictionaries  
+  Управление всеми записями и справочниками
 
-## Screenshots
+---
 
-_Add screenshots or a demo link here._
+## Screenshots / Скриншоты
 
-## License
+_Add screenshots or demo link here_  
+_Добавьте скриншоты или ссылку на демо-версию_
 
-MIT License — see `LICENSE` file for details.
+---
 
-## Author
+## License / Лицензия
+
+MIT License — see `LICENSE` file  
+Лицензия MIT — см. файл `LICENSE`
+
+---
+
+## Author / Автор
 
 Your Name @YourGitHubUsername
