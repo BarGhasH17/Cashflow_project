@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 from .models import CashFlowRecord, Status, Type, Category, Subcategory
 from .filters import CashFlowFilter
 from .forms import CashFlowForm
@@ -198,3 +198,30 @@ def delete_record(request, pk):
     except Exception as e:
         # Catch-all for other exceptions (database errors, etc)
         return JsonResponse({'status': 'error', 'message': f'Server error: {str(e)}'}, status=500)
+
+def edit_record(request, pk):
+    record = get_object_or_404(CashFlowRecord, pk=pk)
+
+    if request.method == 'POST':
+        form = CashFlowForm(request.POST, instance=record)
+        if form.is_valid():
+            form.save()
+            return redirect('record_list')  
+    else:
+        form = CashFlowForm(instance=record)
+        all_forms = CashFlowForm(request.POST)
+
+    return render(request, 'cashflow/add_record.html', {
+        'form': form,
+        'is_edit': True,
+        'record_id': record.id,
+        'all_forms': all_forms,
+        'statuses': Status.objects.all(),
+        'types': Type.objects.all(),
+        'categories': Category.objects.all(),
+        'subcategories': Subcategory.objects.all(),
+        'selected_category_id': record.category.id,
+        'selected_status_id': record.status.id,
+        'selected_type_id': record.type.id,
+        'selected_subcategory_id': record.subcategory.id,
+    })

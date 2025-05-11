@@ -10,7 +10,7 @@
         </div>
         <div class="card-body">
             <!-- Form with validation and CSRF protection -->
-            <form method="post" class="needs-validation" novalidate>
+            <form method="post" action="{% if is_edit %}/edit-record/{{ record_id }}/{% else %}/add-record/{% endif %}" class="needs-validation" novalidate>
                 {% csrf_token %}
                 
                 <!-- Responsive form grid layout -->
@@ -44,7 +44,7 @@
                             <select name="status" id="status-select" class="form-select" required>
                                 <option value="" selected disabled>Select status...</option>
                                 {% for status in statuses %}
-                                    <option value="{{ status.id }}">{{ status.name }}</option>
+                                    <option value="{{ status.id }}" {% if status.id == selected_status_id %}selected{% endif %}>{{ status.name }}</option>
                                 {% endfor %}
                             </select>
                             <button type="button" id="add-status-btn" class="btn btn-outline-dark">
@@ -68,7 +68,7 @@
                             <select name="type" id="type-select" class="form-select" required>
                                 <option value="" selected disabled>Select type...</option>
                                 {% for type in types %}
-                                    <option value="{{ type.id }}">{{ type.name }}</option>
+                                     <option value="{{ type.id }}" {% if type.id == selected_type_id %}selected{% endif %}>{{ type.name }}</option>
                                 {% endfor %}
                             </select>
                             <button type="button" id="add-type-btn" class="btn btn-outline-dark">
@@ -92,7 +92,7 @@
                             <select name="category" id="id_category" class="form-select" required>
                                 <option value="" selected disabled>Select category...</option>
                                 {% for category in categories %}
-                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                    <option value="{{ category.id }}" {% if category.id == selected_category_id %}selected{% endif %}>{{ category.name }}</option>
                                 {% endfor %}
                             </select>
                             <button type="button" id="add-category-btn" class="btn btn-outline-dark">
@@ -117,9 +117,7 @@
                                 <option value="" selected disabled>Select subcategory...</option>
                                 {% for subcategory in subcategories %}
                                     {% if subcategory.category.id == selected_category_id %}
-                                        <option value="{{ subcategory.id }}">
-                                            {{ subcategory.name }}
-                                        </option>
+                                        <option value="{{ subcategory.id }}" {% if subcategory.id == selected_subcategory_id %}selected{% endif %}>{{ subcategory.name }}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -152,7 +150,7 @@
                         <i class="bi bi-arrow-left"></i> Cancel
                     </a>
                     <button type="submit" class="btn btn-dark">
-                        <i class="bi bi-save"></i> Save Record
+                        <i class="bi bi-save"></i> {% if is_edit %}Update{% else %}Save{% endif %} Record
                     </button>
                 </div>
             </form>

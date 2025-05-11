@@ -28,4 +28,12 @@ export function initRecordList() {
             }
         });
     });
+    // EDIT 
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const recordId = this.getAttribute('data-record-id');
+            window.location.href = `/edit-record/${recordId}/`;  // This will load the edit form page
+        });
+    });
 }
