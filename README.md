@@ -106,13 +106,8 @@ Open in browser / Открыть в браузере:
 
 ---
 
-## License / Лицензия
-
-MIT License — see `LICENSE` file  
-Лицензия MIT — см. файл `LICENSE`
-
----
-
 ## Author / Автор
 
-Your Name @YourGitHubUsername
+Developed by *Mohamed Barghash*.
+
+Разработано *Mohamed Barghash*.
