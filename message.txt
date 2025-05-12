@@ -1,5 +1,6 @@
-Add form validation and testing
+Add i18n test suite
 
-- Added form validation for amounts and relationships
-- Restructured tests into /tests package
-- Maintained existing functionality
+* Language switching via POST
+* Header-based detection
+* Default language fallback
+* Translation verification
