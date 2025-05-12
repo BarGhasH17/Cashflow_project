@@ -95,8 +95,14 @@ Open in browser / Открыть в браузере:
 
 ## Screenshots / Скриншоты
 
-_Add screenshots or demo link here_  
-_Добавьте скриншоты или ссылку на демо-версию_
+![image](https://github.com/user-attachments/assets/95070ca6-613c-4c32-b473-a4faceed26e8)
+
+![image](https://github.com/user-attachments/assets/c0bf45ae-1e2e-4865-99a9-cea7c69441bf)
+
+![image](https://github.com/user-attachments/assets/f7fa656c-7ee2-4b64-87d8-b8237089867c)
+
+![image](https://github.com/user-attachments/assets/9dc30e9b-2b66-487d-ada2-671a08b5fad4)
+
 
 ---
 
