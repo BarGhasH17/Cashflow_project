@@ -1,13 +1,14 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from cashflow.models import (Status, Type, 
-                           Category, Subcategory,
-                           CashFlowRecord)
+from cashflow.models import Status, Type, Category, Subcategory, CashFlowRecord
+
 
 class ViewTests(TestCase):
+    """Comprehensive tests for all cashflow views functionality."""
+
     @classmethod
     def setUpTestData(cls):
-        """Create test data once for all tests"""
+        """Create shared test data for all test methods."""
         cls.client = Client()
         cls.status = Status.objects.create(name="TestStatus")
         cls.type = Type.objects.create(name="TestType")
@@ -18,7 +19,7 @@ class ViewTests(TestCase):
         )
         
     def setUp(self):
-        """Run before each test"""
+        """Create a test record before each test."""
         self.record = CashFlowRecord.objects.create(
             status=self.status,
             type=self.type,
@@ -29,39 +30,25 @@ class ViewTests(TestCase):
         )
 
     def test_record_list_view(self):
-        """Test record listing page"""
+        """Verify the record list view displays correct data."""
         response = self.client.get(reverse('record_list'))
+        
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'cashflow/record_list.html')
         self.assertContains(response, "Cash Flow Records")
         self.assertContains(response, "100.00")
 
-    def test_add_record_view(self):
-        """Test record creation page"""
-        response = self.client.get(reverse('add_record'))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Add Cash Flow Record")
-
-    def test_record_deletion(self):
-        """Test record deletion"""
-        delete_url = reverse('delete_record', args=[self.record.id])
-        
-        # First request to get CSRF token
-        self.client.get(reverse('record_list'))
-        
-        response = self.client.post(
-            delete_url,
-            HTTP_X_CSRFTOKEN=self.client.cookies['csrftoken'].value
-        )
-        
-        self.assertEqual(response.status_code, 200)
-        self.assertFalse(CashFlowRecord.objects.filter(id=self.record.id).exists())
-
     def test_add_record_view_get(self):
+        """Verify the add record form renders correctly."""
         response = self.client.get(reverse('add_record'))
+        
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'cashflow/add_record.html')
+        self.assertContains(response, "Add Cash Flow Record")
 
     def test_edit_record_view_post(self):
+        """Verify record editing functionality works correctly."""
+        # Create test record
         record = CashFlowRecord.objects.create(
             date='2025-05-10',
             amount=100.00,
@@ -71,6 +58,8 @@ class ViewTests(TestCase):
             subcategory=self.subcategory,
             comment='Initial comment',
         )
+        
+        # Prepare updated data
         updated_data = {
             'date': '2025-05-11',
             'amount': 150.00,
@@ -80,14 +69,24 @@ class ViewTests(TestCase):
             'subcategory': self.subcategory.id,
             'comment': 'Updated comment',
         }
-        response = self.client.post(reverse('edit_record', args=[record.id]), data=updated_data, follow=True)
+        
+        # Submit update
+        response = self.client.post(
+            reverse('edit_record', args=[record.id]),
+            data=updated_data,
+            follow=True
+        )
+        
+        # Verify results
         self.assertEqual(response.status_code, 200)
         record.refresh_from_db()
         self.assertEqual(record.amount, 150.00)
         self.assertEqual(record.comment, 'Updated comment')
-        # self.assertRedirects(response, 'record_list')
+        self.assertEqual(record.date.strftime('%Y-%m-%d'), '2025-05-11')
 
     def test_delete_record_view(self):
+        """Verify record deletion functionality works correctly."""
+        # Create test record
         record = CashFlowRecord.objects.create(
             date='2025-05-10',
             amount=100.00,
@@ -97,6 +96,10 @@ class ViewTests(TestCase):
             subcategory=self.subcategory,
             comment='To be deleted',
         )
+        
+        # Delete record
         response = self.client.post(reverse('delete_record', args=[record.id]))
+        
+        # Verify deletion
         self.assertEqual(response.status_code, 200)
         self.assertFalse(CashFlowRecord.objects.filter(id=record.id).exists())

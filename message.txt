@@ -1,6 +1,7 @@
-Add i18n test suite
+Clean and improve codebase readability
 
-* Language switching via POST
-* Header-based detection
-* Default language fallback
-* Translation verification
+- Standardized docstrings and documentation across all files
+- Improved code organization and logical grouping
+- Enhanced error handling and validation
+- Applied consistent formatting and naming conventions
+- Maintained all existing functionality while optimizing structure

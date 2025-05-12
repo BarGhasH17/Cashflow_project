@@ -5,10 +5,13 @@ from cashflow.models import Status, Type, Category, Subcategory, CashFlowRecord
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
+
 class ModelTests(TestCase):
+    """Comprehensive tests for all cashflow model functionality."""
+
     @classmethod
     def setUpTestData(cls):
-        """Create test data once for all tests"""
+        """Create shared test data for all test methods."""
         cls.status = Status.objects.create(name="Business")
         cls.type = Type.objects.create(name="Income")
         cls.category = Category.objects.create(name="Sales")
@@ -26,22 +29,22 @@ class ModelTests(TestCase):
         )
 
     def test_status_model(self):
-        """Test Status model constraints"""
+        """Test Status model string representation and uniqueness."""
         self.assertEqual(str(self.status), "Business")
-        # Test unique constraint using validate_unique()
+        
+        # Verify duplicate status names are prevented
         duplicate_status = Status(name="Business")
         with self.assertRaises(ValidationError):
             duplicate_status.validate_unique()
 
     def test_category_model(self):
-        """Test Category model functionality"""
+        """Test Category model relationships and string representation."""
         self.assertEqual(str(self.category), "Sales")
-        # Test relationship with subcategories
         self.assertEqual(self.category.subcategory_set.count(), 1)
         self.assertEqual(self.category.subcategory_set.first().name, "Online")
 
     def test_cashflow_record_validation(self):
-        """Test model validation rules through the form"""
+        """Test negative amount validation through form interface."""
         form_data = {
             'status': self.status.id,
             'type': self.type.id,
@@ -52,40 +55,59 @@ class ModelTests(TestCase):
         }
         form = CashFlowForm(data=form_data)
         self.assertFalse(form.is_valid())
-        self.assertIn('amount', form.errors)  
+        self.assertIn('amount', form.errors)
 
     def test_status_str(self):
-      status = Status.objects.create(name='Pending')
-      self.assertEqual(str(status), 'Pending')
+        """Test Status model __str__ method."""
+        status = Status.objects.create(name='Pending')
+        self.assertEqual(str(status), 'Pending')
 
     def test_type_str(self):
-      type = Type.objects.create(name='Pending')
-      self.assertEqual(str(type), 'Pending')
+        """Test Type model __str__ method."""
+        type = Type.objects.create(name='Pending')
+        self.assertEqual(str(type), 'Pending')
 
     def test_category_str(self):
-      category = Category.objects.create(name='Pending')
-      self.assertEqual(str(category), 'Pending')
+        """Test Category model __str__ method."""
+        category = Category.objects.create(name='Pending')
+        self.assertEqual(str(category), 'Pending')
 
     def test_subcategory_str(self):
-      subcategory = Subcategory.objects.create(name='Pending', category=Category.objects.create(name='Pending'))
-      self.assertEqual(str(subcategory), 'Pending')
+        """Test Subcategory model __str__ method."""
+        parent_category = Category.objects.create(name='Pending')
+        subcategory = Subcategory.objects.create(
+            name='Pending',
+            category=parent_category
+        )
+        self.assertEqual(str(subcategory), 'Pending')
 
     def test_unique_status_name(self):
-      Status.objects.create(name='Approved')
-      with self.assertRaises(IntegrityError):
-          Status.objects.create(name='Approved')
+        """Test Status model name uniqueness at database level."""
+        Status.objects.create(name='Approved')
+        with self.assertRaises(IntegrityError):
+            Status.objects.create(name='Approved')
 
     def test_unique_type_name(self):
-      Type.objects.create(name='Approved')
-      with self.assertRaises(IntegrityError):
-          Type.objects.create(name='Approved')
+        """Test Type model name uniqueness at database level."""
+        Type.objects.create(name='Approved')
+        with self.assertRaises(IntegrityError):
+            Type.objects.create(name='Approved')
 
     def test_unique_category_name(self):
-      Category.objects.create(name='Approved')
-      with self.assertRaises(IntegrityError):
-          Category.objects.create(name='Approved')
+        """Test Category model name uniqueness at database level."""
+        Category.objects.create(name='Approved')
+        with self.assertRaises(IntegrityError):
+            Category.objects.create(name='Approved')
 
     def test_unique_subcategory_name(self):
-      Subcategory.objects.create(name='Approved', category=Category.objects.create(name='Approved'))
-      with self.assertRaises(IntegrityError):
-          Subcategory.objects.create(name='Approved', category=Category.objects.create(name='Approved'))
+        """Test Subcategory model name uniqueness at database level."""
+        parent_category = Category.objects.create(name='Approved')
+        Subcategory.objects.create(
+            name='Approved',
+            category=parent_category
+        )
+        with self.assertRaises(IntegrityError):
+            Subcategory.objects.create(
+                name='Approved',
+                category=Category.objects.create(name='Approved2')
+            )

@@ -1,20 +1,20 @@
 import django_filters
 from django import forms
-from .models import CashFlowRecord
 from django.utils.translation import gettext_lazy as _
+from .models import CashFlowRecord
 
 
 class CashFlowFilter(django_filters.FilterSet):
     """
-    FilterSet for querying CashFlowRecord instances with advanced filtering capabilities.
-    Provides range-based date filtering and exact match filters for related models.
+    Advanced filtering system for CashFlowRecord queries.
     
-    Features:
-    - Date range filtering with custom widget
-    - Consistent styling for all filter controls
-    - Exact match filters for status, type, category, and subcategory
+    Provides comprehensive filtering capabilities including:
+    - Date range filtering with custom date picker widgets
+    - Exact match filtering for related models (status, type, etc.)
+    - Consistent Bootstrap form styling across all filters
+    - Localized field labels
     """
-    
+
     date = django_filters.DateFromToRangeFilter(
         field_name='date',
         label=_('Date Range'),
@@ -23,7 +23,7 @@ class CashFlowFilter(django_filters.FilterSet):
             'class': 'form-control form-control-sm'
         })
     )
-    
+
     class Meta:
         model = CashFlowRecord
         fields = {
@@ -34,19 +34,39 @@ class CashFlowFilter(django_filters.FilterSet):
         }
 
     def __init__(self, *args, **kwargs):
-        """
-        Initialize the filter with consistent Bootstrap form styling.
-        Applies uniform 'form-select' classes to all select inputs.
-        """
+        """Initialize filters with consistent styling and localized labels."""
         super().__init__(*args, **kwargs)
-        self.filters['status'].label = _('Status')
-        self.filters['type'].label = _('Type')
-        self.filters['category'].label = _('Category')
-        self.filters['subcategory'].label = _('Subcategory')
         
-        # Apply consistent styling to all select inputs
-        for field_name, field in self.filters.items():
-            if hasattr(field, 'field') and isinstance(field.field.widget, forms.Select):
-                field.field.widget.attrs.update({
-                    'class': 'form-select form-select-sm'
-                })
+        # Set localized labels for filter fields
+        self._set_filter_labels()
+        
+        # Apply consistent Bootstrap styling to all select inputs
+        self._apply_bootstrap_styling()
+
+    def _set_filter_labels(self):
+        """Apply translated labels to filter fields."""
+        label_mapping = {
+            'status': _('Status'),
+            'type': _('Type'),
+            'category': _('Category'),
+            'subcategory': _('Subcategory')
+        }
+        
+        for field_name, label in label_mapping.items():
+            if field_name in self.filters:
+                self.filters[field_name].label = label
+
+    def _apply_bootstrap_styling(self):
+        """Add Bootstrap classes to all filter widgets."""
+        for field in self.filters.values():
+            if hasattr(field, 'field'):
+                widget = field.field.widget
+                
+                if isinstance(widget, forms.Select):
+                    widget.attrs.update({
+                        'class': 'form-select form-select-sm'
+                    })
+                elif isinstance(widget, forms.DateInput):
+                    widget.attrs.update({
+                        'class': 'form-control form-control-sm'
+                    })
