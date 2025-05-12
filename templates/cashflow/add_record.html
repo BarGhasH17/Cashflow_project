@@ -43,7 +43,7 @@
                         <label class="form-label fw-bold">{% trans "Status" %}</label>
                         <div class="input-group">
                             <select name="status" id="status-select" class="form-select" required>
-                                <option value="" selected disabled>Select status...</option>
+                                <option value="" selected disabled>{% trans "Select status..." %}</option>
                                 {% for status in statuses %}
                                     <option value="{{ status.id }}" {% if status.id == selected_status_id %}selected{% endif %}>{{ status.name }}</option>
                                 {% endfor %}
@@ -54,22 +54,22 @@
                         </div>
                         <div id="new-status-container" class="mt-2 d-none">
                             <div class="input-group">
-                                <input type="text" id="new-status-input" class="form-control" placeholder="New status name">
+                                <input type="text" id="new-status-input" class="form-control" placeholder="{% trans 'New status name' %}">
                                 <button id="save-status-btn" class="btn btn-secondary" type="button">
                                     <i class="bi bi-check-lg"></i> {% trans "Save" %}
                                 </button>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Type Selection with Add New Option -->
                     <div class="col-md-6">
                         <label class="form-label fw-bold">{% trans "Type" %}</label>
                         <div class="input-group">
                             <select name="type" id="type-select" class="form-select" required>
-                                <option value="" selected disabled>Select type...</option>
+                                <option value="" selected disabled>{% trans "Select type..." %}</option>
                                 {% for type in types %}
-                                     <option value="{{ type.id }}" {% if type.id == selected_type_id %}selected{% endif %}>{{ type.name }}</option>
+                                    <option value="{{ type.id }}" {% if type.id == selected_type_id %}selected{% endif %}>{{ type.name }}</option>
                                 {% endfor %}
                             </select>
                             <button type="button" id="add-type-btn" class="btn btn-outline-dark">
@@ -78,20 +78,20 @@
                         </div>
                         <div id="new-type-container" class="mt-2 d-none">
                             <div class="input-group">
-                                <input type="text" id="new-type-input" class="form-control" placeholder="New type name">
+                                <input type="text" id="new-type-input" class="form-control" placeholder="{% trans 'New type name' %}">
                                 <button id="save-type-btn" class="btn btn-secondary" type="button">
                                     <i class="bi bi-check-lg"></i> {% trans "Save" %}
                                 </button>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Category Selection with Add New Option -->
                     <div class="col-md-6">
                         <label class="form-label fw-bold">{% trans "Category" %}</label>
                         <div class="input-group">
                             <select name="category" id="id_category" class="form-select" required>
-                                <option value="" selected disabled>Select category...</option>
+                                <option value="" selected disabled>{% trans "Select category..." %}</option>
                                 {% for category in categories %}
                                     <option value="{{ category.id }}" {% if category.id == selected_category_id %}selected{% endif %}>{{ category.name }}</option>
                                 {% endfor %}
@@ -102,20 +102,20 @@
                         </div>
                         <div id="new-category-container" class="mt-2 d-none">
                             <div class="input-group">
-                                <input type="text" id="new-category-input" class="form-control" placeholder="New category name">
+                                <input type="text" id="new-category-input" class="form-control" placeholder="{% trans 'New category name' %}">
                                 <button id="save-category-btn" class="btn btn-secondary" type="button">
                                     <i class="bi bi-check-lg"></i> {% trans "Save" %}
                                 </button>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Subcategory Selection (dynamic based on category) -->
                     <div class="col-md-6">
                         <label class="form-label fw-bold">{% trans "Subcategory" %}</label>
                         <div class="input-group">
                             <select name="subcategory" id="id_subcategory" class="form-select" required>
-                                <option value="" selected disabled>Select subcategory...</option>
+                                <option value="" selected disabled>{% trans "Select subcategory..." %}</option>
                                 {% for subcategory in subcategories %}
                                     {% if subcategory.category.id == selected_category_id %}
                                         <option value="{{ subcategory.id }}" {% if subcategory.id == selected_subcategory_id %}selected{% endif %}>{{ subcategory.name }}</option>
@@ -128,7 +128,7 @@
                         </div>
                         <div id="new-subcategory-container" class="mt-2 d-none">
                             <div class="input-group">
-                                <input type="text" id="new-subcategory-input" class="form-control" placeholder="New subcategory name">
+                                <input type="text" id="new-subcategory-input" class="form-control" placeholder="{% trans 'New subcategory name' %}">
                                 <button id="save-subcategory-btn" class="btn btn-secondary" type="button">
                                     <i class="bi bi-check-lg"></i> {% trans "Save" %}
                                 </button>

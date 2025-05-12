@@ -1,5 +1,6 @@
 from django import forms
 from .models import CashFlowRecord
+from django.utils.translation import gettext_lazy as _
 
 
 class CashFlowForm(forms.ModelForm):
@@ -11,41 +12,29 @@ class CashFlowForm(forms.ModelForm):
         new_status: Hidden field for adding new status values on-the-fly
         new_type: Hidden field for adding new type values on-the-fly
     """
-    new_status = forms.CharField(
-        required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control-sm d-none',
-            'placeholder': 'New status name',
-            'id': 'new-status-input'
-        })
-    )
-    
-    new_type = forms.CharField(
-        required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control-sm d-none',
-            'placeholder': 'New type',
-            'id': 'new-type-input'
-        })
-    )
 
     class Meta:
         model = CashFlowRecord
         fields = '__all__'
         widgets = {
-            'date': forms.DateInput(attrs={
+            'date': forms.DateInput(
+                format='%Y-%m-%d', 
+                attrs={
                 'type': 'date',
                 'class': 'form-control',
                 'id': 'date-select'
             }),
             'amount': forms.NumberInput(attrs={ 
                 'class': 'form-control',
-                'id': 'amount-select'
+                'id': 'amount-select',
+                'placeholder': _('Enter amount...'),
+
             }),
             'comment': forms.Textarea(attrs={
                 'class': 'form-control',
                 'id': 'comment-select',
-                'rows': '4'
+                'rows': '4',
+                'placeholder': _('Write something...'),
             }),
         }
 

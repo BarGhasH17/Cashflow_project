@@ -1,7 +1,7 @@
 import django_filters
 from django import forms
 from .models import CashFlowRecord
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 
 class CashFlowFilter(django_filters.FilterSet):
@@ -39,6 +39,10 @@ class CashFlowFilter(django_filters.FilterSet):
         Applies uniform 'form-select' classes to all select inputs.
         """
         super().__init__(*args, **kwargs)
+        self.filters['status'].label = _('Status')
+        self.filters['type'].label = _('Type')
+        self.filters['category'].label = _('Category')
+        self.filters['subcategory'].label = _('Subcategory')
         
         # Apply consistent styling to all select inputs
         for field_name, field in self.filters.items():
